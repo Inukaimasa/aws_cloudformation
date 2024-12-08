@@ -1,0 +1,21 @@
+#ec2インスタンスにApacheをインストールする。
+#手順
+sudo yum update -y
+sudo yum install -y httpd
+sudo systemctl start httpd
+sudo systemctl enable httpd
+systemctl is-enabled httpd
+#phpをインストールする
+sudo dnf install php8.1
+php --version
+
+#webサーバーを使いたい時は下記を追加する
+sudo systemctl restart php-fpm
+sudo systemctl restart httpd
+
+#ワードプレスをinstallしたい場合
+
+wget https://wordpress.org/latest.tar.gz
+tar -xzf latest.tar.gz
+#Apache のドキュメントルートは、サーバーが公開するコンテンツが格納されるディレクトリです。
+sudo cp -r wordpress/* /var/www/html/
