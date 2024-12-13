@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <h1>SQL Injection Test</h1>
+  <h2>検索欄</h2>
   <!-- ユーザー検索フォーム -->
   <form method="GET" action="">
     <label for="id">Enter User ID:</label>
@@ -17,7 +17,7 @@
   </form>
 
   <!-- 新規ユーザー登録フォーム -->
-  <h2>Register New User</h2>
+  <h2>新規ユーザー登録</h2>
   <form method="POST" action="">
     <label for="new_id">User ID:</label>
     <input type="text" name="new_id" id="new_id" required>
@@ -38,8 +38,8 @@
 </html>
 
 <!-- SQLインジェクション inputタグの中に入れると指定いしたものがでてくる -->
-01234567' OR 'A' = 'A
-joker' OR 'A' = 'A
+<!-- 01234567' OR 'A' = 'A -->
+
 <?php
 $servername = "localhost";
 $username = "root";
@@ -55,19 +55,24 @@ if ($conn->connect_error) {
 }
 
 // ユーザからの入力を直接使用 ユーザー検索
-$user_input = $_GET['id'];
+// ⓶if文の一行検索時値が0だった場合の処理
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id']) && !empty($_GET['id'])) {
+  $user_input = $_GET['id'];
 
-$sql = "SELECT * FROM users WHERE id = '$user_input'";
-$result = $conn->query($sql);
+  $sql = "SELECT * FROM users WHERE id = '$user_input'";
+  $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-  while ($row = $result->fetch_assoc()) {
-    echo "ID: " . $row["id"] . " - Name: " . $row["name"] . "<br>";
+  if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+      echo "ID: " . $row["id"] . " - Name: " . $row["name"] . "<br>";
+    }
+  } else {
+    echo "0 results";
   }
-} else {
-  echo "0 results";
+  // ⓶検索時値が0だった場合の処理
+} else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+  echo "Please enter a valid User ID.";
 }
-
 // 新規ユーザー登録
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_id']) && isset($_POST['new_name'])) {
   $new_id = $_POST['new_id'];
