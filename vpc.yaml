@@ -9,14 +9,20 @@ Metadata:
         Parameters:
           - VPCCIDR
           - PublicSubnetACIDR
+          - PublicSubnetaCIDR
           - PrivateSubnetCCIDR
+          - PrivateSubnetcCIDR
     ParameterLabels:
       VPCCIDR:
-        default: "VPC CIDR"
+        default: "ParameterLabels VPC CIDR"
       PublicSubnetACIDR:
-        default: "PublicSubnetA CIDR"
-      PrivateSubnetACIDR:
-        default: "PrivateSubnetA CIDR"
+        default: "ParameterLabels PublicSubnetA CIDR"
+      PublicSubnetCCIDR:
+        default: "ParameterLabels PublicSubnetC CIDR"
+      PrivateSubnetaCIDR:
+        default: "ParameterLabels PrivateSubneta CIDR"
+      PrivateSubnetcCIDR:
+        default: "ParameterLabels PrivateSubnetc CIDR" 
 # Input 
 Parameters:
   VPCCIDR:
@@ -25,12 +31,16 @@ Parameters:
 
   PublicSubnetACIDR:
     Type: String
-    Default: "10.0.0.0/24"
-
-  PrivateSubnetACIDR:
+    Default: "10.0.10.0/24"
+  PublicSubnetCCIDR:
+      Type: String
+      Default: "10.0.30.0/24"
+  PrivateSubnetaCIDR:
     Type: String
-    Default: "10.0.100.0/24"
-
+    Default: "10.0.20.0/24"
+  PrivateSubnetcCIDR:
+      Type: String
+      Default: "10.0.40.0/24"
 Resources:
   # ------------------------------------------------------------#
   #  VPC
@@ -45,11 +55,11 @@ Resources:
       InstanceTenancy: default
       Tags:
         - Key: Name
-          Value: pro-igw-vpc-web
-        - Key: Project
-          Value:  project
-        - Key: Environment
-          Value: Pro
+          Value: Resources-pro-vpc-web
+        - Key: Resources-Project
+          Value:  Resources-Resources-project
+        - Key: Resources-Environment
+          Value: Resources-Pro
 
   # InternetGateway Create
   InternetGateway:
@@ -87,12 +97,26 @@ Resources:
           Value: Project
         - Key: Environment
           Value: Pro
-  # Private SubnetA Create
-  PrivateSubnetA:
+  # Public SubnetC Create
+  PublicSubnetC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1c
+      CidrBlock: !Ref PublicSubnetCCIDR
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: pro-subnet-public-1c
+        - Key: Project
+          Value: Project
+        - Key: Environment
+          Value: Pro
+# Private Subnet a Create
+  PrivateSubneta:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: ap-northeast-1a
-      CidrBlock: !Ref PrivateSubnetACIDR
+      CidrBlock: !Ref PrivateSubnetaCIDR
       VpcId: !Ref VPC
       Tags:
         - Key: Name
@@ -101,4 +125,18 @@ Resources:
           Value: Project
         - Key: Environment
           Value: Pro
+  #privatesubnet c create
+  PrivateSubnetc:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1c
+      CidrBlock: !Ref PrivateSubnetcCIDR
+      VpcId: !Ref VPC
+      Tags:
+         - Key: Name
+           Value: pro-subnet-private-c
+         - Key: Project
+           Value: Project
+         - Key: Environment
+           Value: Pro
 
